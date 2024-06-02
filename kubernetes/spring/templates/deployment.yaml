@@ -37,5 +37,16 @@ spec:
             requests:
               cpu: {{ .Values.requests.cpu }}
               memory: {{ .Values.requests.memory }}
+          env:
+          - name: SPRING_DATA_MONGODB_HOST
+            value: "mongodb-0.mongodb-headless.dev.svc.cluster.local"
+          - name: SPRING_DATA_MONGODB_PORT
+            value: "27017"
+          - name: SPRING_DATA_MONGODB_DATABASE
+            value: "exampledb"
+          - name: SPRING_DATA_MONGODB_USERNAME
+            value: "user"
+          - name: SPRING_DATA_MONGODB_PASSWORD
+            value: "password"
 
 

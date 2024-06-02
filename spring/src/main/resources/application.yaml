@@ -1,0 +1,10 @@
+spring:
+  application: 
+    name: spring
+  data:
+    mongodb: 
+      host: mongodb-0.mongodb-headleass.dev.svc.cluster.local 
+      port: 27017
+      database: exampledb 
+      username: user 
+      password: password

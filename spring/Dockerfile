@@ -1,5 +1,6 @@
 # Stage 1: Build the application (uses Gradle)
 FROM gradle:7.6.0-jdk17 AS build
+
 COPY . /app
 WORKDIR /app
 RUN gradle bootJar

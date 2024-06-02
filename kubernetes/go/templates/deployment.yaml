@@ -37,4 +37,3 @@ spec:
             requests:
               cpu: {{ .Values.requests.cpu }}
               memory: {{ .Values.requests.memory }}
-
