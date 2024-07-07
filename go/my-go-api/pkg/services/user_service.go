@@ -138,11 +138,11 @@ func CreateMultipleUsers(client *mongo.Client, n int) error {
 }
 
 // ChunkSize defines the size of each chunk for parallel processing
-const ChunkSize = 10000
 
 // CreateMultipleUsers creates multiple users in parallel.
 func CreateMultipleUsersGoRoutine(client *mongo.Client, n int) error {
 	collection := client.Database(databaseName).Collection(collectionName)
+	var ChunkSize = n / 4
 	var wg sync.WaitGroup
 	errorChannel := make(chan error, n/ChunkSize)
 
@@ -202,6 +202,15 @@ func CountUsers(client *mongo.Client) (int64, error) {
 	result, err := collection.CountDocuments(context.TODO(), bson.D{})
 	if err != nil {
 		return 0, err
+	}
+	return result, nil
+}
+
+func DeleteAllUsers(client *mongo.Client) (*mongo.DeleteResult, error) {
+	collection := client.Database(databaseName).Collection(collectionName)
+	result, err := collection.DeleteMany(context.TODO(), bson.D{})
+	if err != nil {
+		return nil, err
 	}
 	return result, nil
 }

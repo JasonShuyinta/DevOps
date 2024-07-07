@@ -26,6 +26,7 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	r.POST("/user/:n", handlers.CreateMultipleUsersHandler)
 	r.POST("/user/go/:n", handlers.CreateMultipleUsersGoRoutineHandler)
 	r.GET("/user/count", handlers.CountUsersHandler)
+	r.DELETE("/user/all", handlers.DeleteAllUsersHandler)
 
 	return r
 }

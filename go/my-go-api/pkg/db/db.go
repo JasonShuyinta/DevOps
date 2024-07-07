@@ -9,6 +9,8 @@ import (
 	"net/url"
 	"os"
 
+	"database/sql"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -16,6 +18,7 @@ import (
 
 var client *mongo.Client
 
+// Mongo
 func ConnectDB() *mongo.Client {
 	// Load env variables from .env
 	config.LoadConfig()
@@ -55,5 +58,33 @@ func DisconnectDB() {
 	if err := client.Disconnect(context.TODO()); err != nil {
 		log.Fatalf("Error disconnecting from MongoDB: %v", err)
 		panic(err)
+	}
+}
+
+// Postgres
+func ConnectToPSQL() (*sql.DB, error) {
+	username := url.QueryEscape(os.Getenv("POSTGRES_USER"))
+	password := url.QueryEscape(os.Getenv("POSTGRES_PASSWORD"))
+	database := url.QueryEscape(os.Getenv("POSTGRES_DB"))
+	connStr := fmt.Sprintf("postgres://%s:%s@localhost:5432/%s?sslmode=disable", username, password, database)
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		return nil, fmt.Errorf("error connecting to the database: %v", err)
+	}
+
+	//Test connection
+	if err := db.Ping(); err != nil {
+		db.Close()
+		return nil, fmt.Errorf("error connecting to database : %v", err)
+	}
+
+	fmt.Println("Successfuflly conected to PostgreSQL")
+	return db, nil
+}
+
+func ClosePSQL(db *sql.DB) {
+	if db != nil {
+		db.Close()
+		fmt.Println("Database connection closed")
 	}
 }

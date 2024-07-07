@@ -118,3 +118,13 @@ func CountUsersHandler(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, count)
 }
+
+func DeleteAllUsersHandler(c *gin.Context) {
+	client := c.MustGet("dbClient").(*mongo.Client)
+	result, err := services.DeleteAllUsers(client)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error deleting all users: " + err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, result)
+}
