@@ -4,6 +4,7 @@ import (
 	"my-go-api/pkg/models"
 	"my-go-api/pkg/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -57,4 +58,63 @@ func DeleteUserByIDHandler(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully!"})
+}
+
+func UpdateUserHandler(c *gin.Context) {
+	client := c.MustGet("dbClient").(*mongo.Client)
+	var user models.User
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input: " + err.Error()})
+		return
+	}
+
+	if err := services.UpdateUser(client, user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updatig user: " + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User updated successfully!"})
+}
+
+func CreateMultipleUsersHandler(c *gin.Context) {
+	client := c.MustGet("dbClient").(*mongo.Client)
+	nStr := c.Param("n")
+	n, err := strconv.Atoi(nStr)
+	if err != nil || n <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid number of users"})
+		return
+	}
+
+	if err := services.CreateMultipleUsers(client, n); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating multiple users: " + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": nStr + " users created successfully!"})
+}
+
+func CreateMultipleUsersGoRoutineHandler(c *gin.Context) {
+	client := c.MustGet("dbClient").(*mongo.Client)
+	nStr := c.Param("n")
+	n, err := strconv.Atoi(nStr)
+	if err != nil || n <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid number of users"})
+		return
+	}
+
+	if err := services.CreateMultipleUsersGoRoutine(client, n); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating multiple users: " + err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": nStr + " users created successfully!"})
+}
+
+func CountUsersHandler(c *gin.Context) {
+	client := c.MustGet("dbClient").(*mongo.Client)
+	count, err := services.CountUsers(client)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error counting users: " + err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, count)
 }

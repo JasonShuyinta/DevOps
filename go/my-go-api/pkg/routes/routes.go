@@ -17,10 +17,15 @@ func SetupRouter(client *mongo.Client) *gin.Engine {
 	})
 
 	// Define routes
-	r.GET("/get-all-users", handlers.GetAllUsersHandler)
-	r.POST("/save-user", handlers.SaveUserHandler)
-	r.GET("/get-user/:id", handlers.GetUserByIDHandler)
-	r.DELETE("/delete-user/:id", handlers.DeleteUserByIDHandler)
+	//User
+	r.GET("/user", handlers.GetAllUsersHandler)
+	r.POST("/user", handlers.SaveUserHandler)
+	r.GET("/user/:id", handlers.GetUserByIDHandler)
+	r.DELETE("/user/:id", handlers.DeleteUserByIDHandler)
+	r.PUT("/user", handlers.UpdateUserHandler)
+	r.POST("/user/:n", handlers.CreateMultipleUsersHandler)
+	r.POST("/user/go/:n", handlers.CreateMultipleUsersGoRoutineHandler)
+	r.GET("/user/count", handlers.CountUsersHandler)
 
 	return r
 }
