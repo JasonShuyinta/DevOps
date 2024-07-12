@@ -13,18 +13,18 @@ import (
 func main() {
 
 	// Connect to mongodb
-	client := db.ConnectDB()
+	mongoClient := db.ConnectDB()
 	defer db.DisconnectDB()
 
 	// Connect to postgres
-	db, err := db.ConnectToPSQL()
+	postgresClient, err := db.ConnectToPSQL()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to connect to database: ", err)
 	}
-	defer ClosePSQL(db)
+	defer postgresClient.Close()
 
-	// Set up the Gin router
-	r := routes.SetupRouter(client)
+	// Set up the Gin router for both MongoDB and PostgreSQL
+	r := routes.SetupRoutes(mongoClient, postgresClient)
 
 	// Start http server
 	r.Run(":8081")
