@@ -10,6 +10,22 @@ import (
 	"time"
 )
 
+func CreateTableIfNotExists(db *sql.DB) error {
+	query := `
+	CREATE TABLE IF NOT EXISTS public.album (
+		id SERIAL PRIMARY KEY,
+		title VARCHAR(255) NOT NULL,
+		description TEXT,
+		duration VARCHAR(255),  -- Duration is a string here
+		artist VARCHAR(255),
+		label VARCHAR(255),
+		creation_timestamp TIMESTAMPTZ,
+		update_timestamp TIMESTAMPTZ
+	)`
+	_, err := db.Exec(query)
+	return err
+}
+
 func GetAllAlbums(client *sql.DB) ([]models.Albums, error) {
 	rows, err := client.Query("SELECT * FROM album")
 	if err != nil {
