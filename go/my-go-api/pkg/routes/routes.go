@@ -36,6 +36,7 @@ func SetupRoutes(mongoClient *mongo.Client, postgresClient *sql.DB) *gin.Engine 
 	r.DELETE("/album/:id", handlers.DeleteAlbumByIDHandler(postgresClient))
 	r.POST("/album/:n", handlers.CreateMultipleAlbumsHandler(postgresClient))
 	r.POST("/album/go/:n", handlers.CreateMultipleAlbumsEfficientHandler(postgresClient))
+	r.PUT("/album", handlers.UpdateAlbumHandler(postgresClient))
 
 	return r
 }

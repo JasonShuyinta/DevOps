@@ -110,6 +110,7 @@ func CreateMultipleAlbums(client *sql.DB, n int) error {
 }
 
 func SaveAlbumsEfficiently(client *sql.DB, albums []models.Albums, wg *sync.WaitGroup, errChan chan error) {
+	// Not so efficient
 	defer wg.Done()
 
 	if len(albums) == 0 {
@@ -172,4 +173,14 @@ func CreateMultipleAlbumsEfficient(client *sql.DB, n int) error {
 		}
 	}
 	return nil
+}
+
+func UpdateAlbum(client *sql.DB, album *models.Albums) error {
+	query := `UPDATE album
+	SET title=$1, description = $2, duration = $3, artist  = $4, label = $5
+	WHERE id = $6`
+
+	_, err := client.Exec(query, album.Title, album.Description, album.Duration, album.Artist, album.Label, album.ID)
+
+	return err
 }

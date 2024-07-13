@@ -127,3 +127,23 @@ func CreateMultipleAlbumsEfficientHandler(client *sql.DB) gin.HandlerFunc {
 	}
 	return gin.HandlerFunc(fn)
 }
+
+func UpdateAlbumHandler(client *sql.DB) gin.HandlerFunc {
+	fn := func(c *gin.Context) {
+		var album models.Albums
+
+		if err := c.ShouldBindJSON(&album); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
+			return
+		}
+		album.UpdateTimestamp = time.Now()
+
+		if err := services.UpdateAlbum(client, &album); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error saving album: " + err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, album)
+	}
+	return gin.HandlerFunc(fn)
+}
