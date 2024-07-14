@@ -11,12 +11,6 @@ import (
 func SetupRoutes(mongoClient *mongo.Client, postgresClient *sql.DB) *gin.Engine {
 	r := gin.Default()
 
-	// // Middleware to inject the MongoDB client into the context
-	// r.Use(func(c *gin.Context) {
-	// 	c.Set("dbClient", client)
-	// 	c.Next()
-	// })
-
 	// Define routes
 	//User
 	r.GET("/user", handlers.GetAllUsersHandler(mongoClient))
